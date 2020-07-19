@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using WishList.Data;
+using WishList.Models;
 
 namespace WishList.Controllers
 {
@@ -18,7 +16,31 @@ namespace WishList.Controllers
 
         public IActionResult Index()
         {
-            return View("Index", _context.Items);
+            return View("Index", _context.Items.ToList());
         }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View("Create");
+        }
+
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            var item = _context.Items.FirstOrDefault(e => e.Id == id);
+            _context.Items.Remove(item);
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult Create(Item item)
+        {
+            _context.Items.Add(item);
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
     }
 }
